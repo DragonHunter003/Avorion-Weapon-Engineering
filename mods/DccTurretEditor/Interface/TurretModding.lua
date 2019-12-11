@@ -432,12 +432,12 @@ function Win:BuildUI()
 	
 	-------Downgrade Switch---------
 		self.BtnDowngradeModeSwitch = self.Window:createButton(
-		rect(),
+		Rect(),
 		"Downgrade Mode",
 		"TurretModdingUI_OnClickedBtnDowngradeModeSwitch"
 		)
 		self.BtnDowngradeModeSwitch.textSize = FontSize3
-		self.BtnDowngradeModeSwitch.rect = FramedRect(self.UpdatedFrame,5,6,Cols,Rows)
+		self.BtnDowngradeModeSwitch.rect = FramedRect(self.UpgradeFrame,5,6,Cols,Rows)
 		self.BtnDowngradeModeSwitch.tooltip = "Toggle downgrade mode"
 	-----End Downgrade Switch-----
 	
@@ -1532,7 +1532,7 @@ function TurretModdingUI_OnClickedBtnSize(...) Win:OnClickedBtnSize(...) end
 
 function TurretModdingUI_OnClickedBtnCloneTurret(...) Win:OnClickedBtnCloneTurret(...) end
 function TurretModdingUI_OnClickedBtnCheatModeSwitch(...) Win:OnClickedBtnCheatModeSwitch(...) end
-function TurretModdingUI_OnClickedBtnDowngradeModeSwitch(...) Win:OnClickedBtnDowngradeModeSwitch end
+function TurretModdingUI_OnClickedBtnDowngradeModeSwitch(...) Win:OnClickedBtnDowngradeModeSwitch(...) end
 
 --------------------------------------------------------------------------------
 
