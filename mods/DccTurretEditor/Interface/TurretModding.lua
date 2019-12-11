@@ -26,6 +26,7 @@ local This = {}
 local SellableInventoryItem = require("sellableinventoryitem")
 local TurretLib = require("mods.DccTurretEditor.Common.TurretLib")
 local Config = nil
+local CheatModeOn = false;
 
 function PrintServer(TheMessage)
 -- only print this message on the server.
@@ -128,7 +129,7 @@ function Win:OnInit()
 	self.Res = getResolution()
 	self.Size = vec2(1200,700)
 	self.UI = ScriptUI(Player().craftIndex)
-
+	
 	self.Window = self.UI:createWindow(Rect(
 		(self.Res * 0.5 - self.Size * 0.5),
 		(self.Res * 0.5 + self.Size * 0.5)
@@ -412,11 +413,20 @@ function Win:BuildUI()
 		"TurretModdingUI_OnClickedBtnCloneTurret"
 		)
 		self.BtnCloneTurret.textSize = FontSize3
-		self.BtnCloneTurret.rect = FrameRect(self.UpgradeFrame,5,3,Cols,Rows)
-		self.BtnCloneTurret.tooltip - "Clone current turret.\n(Does not consume turrets)"
+		self.BtnCloneTurret.rect = FramedRect(self.UpgradeFrame,5,3,Cols,Rows)
+		self.BtnCloneTurret.tooltip = "Clone current turret.\n(Does not consume turrets)"
 		
 	--------End Clone-------
 	
+		self.BtnCheatModeSwitch = self.Window:createButton(
+		Rect(),
+		"Cheat Mode",
+		"TurretModdingUI_OnClickedBtnCheatModeSwitch"
+		)
+		self.BtnCheatModeSwitch.textSize = FontSize3
+		self.BtnCheatModeSwitch.rect = FramedRect(self.UpgradeFrame,5,4,Cols,Rows)
+		self.BtnCheatModeSwitch.tooltip = "Toggle cheat mode"
+		
 	self.BtnTargeting = self.Window:createButton(
 		Rect(),
 		"Targeting",
@@ -673,6 +683,22 @@ function Win:ConsumeBinItems()
 	return
 end
 
+function Win:CloneBinItems()
+-- get the items from the bin
+
+	local Armory = Player():getInventory()
+	local Real = nil
+	local Count = 0
+
+	for ItemVec, Item in pairs(self.Bin:getItems()) do
+		--self.Bin:remove(ItemVec)
+		TurretLib:ClonePlayerInventory(Player().index,Item.uvalue,1)
+	end
+
+	return
+end
+
+
 --------------------------------------------------------------------------------
 
 function Win:UpdateItems(Mock,Real)
@@ -746,7 +772,12 @@ function Win:UpdateFields()
 	self.BtnCoaxial.caption = "Coaxial (Cr. " .. toReadableValue(Config.CostCoaxial) .. ")"
 	self.BtnColour.caption = "Colour HSV (Cr. " .. toReadableValue(Config.CostColour) .. ")"
 	self.BtnSize.caption = "Scale (Cr. " .. toReadableValue(Config.CostSize) .. ")"
-
+	self.BtnCloneTurret.caption = "Clone"
+	
+	if(not CheatModeOn) then self.BtnCheatModeSwitch.caption = "Cheat Mode (Off)"
+	else self.BtnCheatModeSwitch.caption = "Cheat Mode (On)"
+	end
+	
 	self.BtnHeat.caption = "Heat Sinks"
 	self.LblHeat.caption = HeatRate .. " Heat, " .. CoolRate .. " Cool"
 	self.LblHeat.color = ColourLight
@@ -951,6 +982,7 @@ function Win:OnBinAdded(SelectID, FX, FY, Item, FromIndex, ToIndex, TX, TY)
 
 	self.Bin:add(Item)
 	print("[DccTurretEditor] Added to Bin: " .. Item.item.weaponName)
+	print(string.format("[DccTurretEditor] Cheatmodevalue: %s",tostring(CheatModeOn)))
 
 	--------
 
@@ -1010,6 +1042,30 @@ function Win:OnUpdatePreviewColour()
 	)
 
 	self.BgColourFrame.backgroundColor = NewColour
+	return
+end
+
+function Win:OnClickedBtnCheatModeSwitch()
+
+	CheatModeOn = not CheatModeOn
+	
+	local NewColour = Color()
+	if(not CheatModeOn) then
+		NewColour:setHSV(
+			0,
+			1,
+			0.8
+		)
+	else
+		NewColour:setHSV(
+			117,
+			1,
+			0.8
+		)
+	end
+
+	Win:UpdateFields()
+	TurretLib:CheatModeSwitch(CheatModeOn)
 	return
 end
 
@@ -1293,13 +1349,7 @@ function Win:OnClickedBtnCloneTurret()
 	local Mock, Real = Win:GetCurrentItems()
 	local PlayerRef = Player()
 	
-	if(Mock == nil) then
-		PrintError("No turret selected")
-		return
-	end
-	
-	TurretLib:CloneTurret(Real)
-	
+	self:CloneBinItems()
 	self:UpdateItems(Mock,Real)
 end
 
@@ -1441,6 +1491,7 @@ function TurretModdingUI_OnClickedBtnCoaxial(...) Win:OnClickedBtnCoaxial(...) e
 function TurretModdingUI_OnClickedBtnSize(...) Win:OnClickedBtnSize(...) end
 
 function TurretModdingUI_OnClickedBtnCloneTurret(...) Win:OnClickedBtnCloneTurret(...) end
+function TurretModdingUI_OnClickedBtnCheatModeSwitch(...) Win:OnClickedBtnCheatModeSwitch(...) end
 
 --------------------------------------------------------------------------------
 
