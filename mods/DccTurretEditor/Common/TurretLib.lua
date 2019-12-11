@@ -1,6 +1,7 @@
 
 local This = {};
 local Config = require("mods.DccTurretEditor.Common.ConfigLib")
+local CheatModeOn = false;
 
 --------------------------------------------------------------------------------
 -- these things are used by the ui to perform authoritive tasks on the server
@@ -116,7 +117,17 @@ function TurretLib_ServerCallback_ConsumePlayerInventory(PlayerID,Index,Num)
 
 	local Armory = Player(PlayerID):getInventory()
 	local Item = Armory:find(Index)
-	local Count = Armory:amount(Index) - Num
+	local Count = Armory:amount(Index)
+	
+	if(CheatModeOn == nil) then
+		CheatModeOn = false
+	end
+	
+	if(not CheatModeOn) then
+		Count = Armory:amount(Index) - Num
+	else 
+		Count = Armory:amount(Index)
+	end
 
 	if(Count < 0) then
 		Count = 0
@@ -124,11 +135,67 @@ function TurretLib_ServerCallback_ConsumePlayerInventory(PlayerID,Index,Num)
 
 	Armory:setAmount(Index,Count)
 	print("[DccTurretEditor] " .. Item.weaponName .. " count to " .. Count)
+	print(string.format("[DccTurretEditor] CheatmodevalueLIB: %s",tostring(CheatModeOn)))
 
 	return
 end
 
 callable(nil,"TurretLib_ServerCallback_ConsumePlayerInventory")
+
+function This:ClonePlayerInventory(PlayerID,Index,Num)
+	-- push the command to consume inventory to the server.
+
+	if(onClient()) then
+		return invokeServerFunction(
+			"TurretLib_ServerCallback_ClonePlayerInventory",
+			PlayerID,
+			Index,
+			Num
+		)
+	end
+
+end
+
+function TurretLib_ServerCallback_ClonePlayerInventory(PlayerID,Index,Num)
+
+	local Armory = Player(PlayerID):getInventory()
+	local Item = Armory:find(Index)
+	local Count = Armory:amount(Index) + 1
+
+	if(Count < 0) then
+		Count = 0
+	end
+
+	Armory:setAmount(Index,Count)
+	print("[DccTurretEditor] " .. Item.weaponName .. " count to " .. Count)
+	print(string.format("[DccTurretEditor] CheatmodevalueLIB: %s",tostring(CheatModeOn)))
+
+	return
+end
+
+callable(nil,"TurretLib_ServerCallback_ClonePlayerInventory")
+
+
+function This:CheatModeSwitch(cheatVal)
+	-- push the command to consume inventory to the server.
+
+	if(onClient()) then
+		return invokeServerFunction(
+			"TurretLib_ServerCallback_CheatModeSwitch",
+			cheatVal
+		)
+	end
+
+end
+
+function TurretLib_ServerCallback_CheatModeSwitch(cheatVal)
+
+    CheatModeOn = cheatVal
+	print(string.format("[DccTurretEditor] Cheatmodevalue: %s",tostring(CheatModeOn)))
+	return
+end
+
+callable(nil,"TurretLib_ServerCallback_CheatModeSwitch")
 
 --------------------------------------------------------------------------------
 -- these ones need to deal with each individual weapon on the turret -----------
@@ -144,17 +211,6 @@ function This:GetWeaponType(Item)
 		else
 			return "beam"
 		end
-	end
-
-	return
-end
-
-function This:CloneTurret(Item)
-	
-	local WeapList = {Item:getWeapons()}
-	local Value = 0
-	for WeapIter,Weap in pairs(WeapList) do		
-		Item:addWeapon(Weap)
 	end
 
 	return
@@ -741,7 +797,7 @@ function This:SetWeaponSize(Item,Val)
 
 	Item.size = Val
 
-	return
+return
 end
 
 --------
