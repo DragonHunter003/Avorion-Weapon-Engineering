@@ -926,6 +926,8 @@ function Win:UpdateBinLabel()
 
 	if(BuffValue > 0) then
 		self.BinLabel.caption = "Turrets To Scrap (+" .. round(BuffValue,3) .. "%)"
+	elseif(BuffValue < 0) then
+		self.BinLabel.caption = "Turrets To Scrap (" .. round(BuffValue,3) .. "%)"
 	else
 		self.BinLabel.caption = "Turrets To Scrap"
 	end
