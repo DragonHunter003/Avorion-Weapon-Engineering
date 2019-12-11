@@ -2,6 +2,7 @@
 local This = {};
 local Config = require("mods.DccTurretEditor.Common.ConfigLib")
 local CheatModeOn = false;
+local DowngradeModeOn = false;
 
 --------------------------------------------------------------------------------
 -- these things are used by the ui to perform authoritive tasks on the server
@@ -135,7 +136,7 @@ function TurretLib_ServerCallback_ConsumePlayerInventory(PlayerID,Index,Num)
 
 	Armory:setAmount(Index,Count)
 	print("[DccTurretEditor] " .. Item.weaponName .. " count to " .. Count)
-	print(string.format("[DccTurretEditor] CheatmodevalueLIB: %s",tostring(CheatModeOn)))
+	--print(string.format("[DccTurretEditor] CheatmodevalueLIB: %s",tostring(CheatModeOn)))
 
 	return
 end
@@ -167,8 +168,8 @@ function TurretLib_ServerCallback_ClonePlayerInventory(PlayerID,Index,Num)
 	end
 
 	Armory:setAmount(Index,Count)
-	print("[DccTurretEditor] " .. Item.weaponName .. " count to " .. Count)
-	print(string.format("[DccTurretEditor] CheatmodevalueLIB: %s",tostring(CheatModeOn)))
+	--print("[DccTurretEditor] " .. Item.weaponName .. " count to " .. Count)
+	--print(string.format("[DccTurretEditor] CheatmodevalueLIB: %s",tostring(CheatModeOn)))
 
 	return
 end
@@ -191,11 +192,32 @@ end
 function TurretLib_ServerCallback_CheatModeSwitch(cheatVal)
 
     CheatModeOn = cheatVal
-	print(string.format("[DccTurretEditor] Cheatmodevalue: %s",tostring(CheatModeOn)))
+	--print(string.format("[DccTurretEditor] Cheatmodevalue: %s",tostring(CheatModeOn)))
 	return
 end
 
 callable(nil,"TurretLib_ServerCallback_CheatModeSwitch")
+
+function This:DowngradeModeSwitch(downgradeVal)
+	-- push the command to consume inventory to the server.
+
+	if(onClient()) then
+		return invokeServerFunction(
+			"TurretLib_ServerCallback_DowngradeModeSwitch",
+			downgradeVal
+		)
+	end
+
+end
+
+function TurretLib_ServerCallback_DowngradeModeSwitch(downgradeVal)
+
+    DowngradeModeOn = downgradeVal
+	print(string.format("[DccTurretEditor] Downgrade Mode Value: %s",tostring(DowngradeModeOn)))
+	return
+end
+
+callable(nil,"TurretLib_ServerCallback_DowngradeModeSwitch")
 
 --------------------------------------------------------------------------------
 -- these ones need to deal with each individual weapon on the turret -----------
