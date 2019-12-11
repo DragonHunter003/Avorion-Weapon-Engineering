@@ -793,6 +793,9 @@ function Win:UpdateFields()
 	if(not CheatModeOn) then self.BtnCheatModeSwitch.caption = "Cheat Mode (Off)"
 	else self.BtnCheatModeSwitch.caption = "Cheat Mode (On)"
 	end
+	if(not DowngradeModeOn) then self.BtnDowngradeModeSwitch.caption = "Downgrade Mode (Off)"
+	else self.BtnDowngradeModeSwitch.caption = "Downgrade Mode (On)"
+	end
 	
 	self.BtnHeat.caption = "Heat Sinks"
 	self.LblHeat.caption = HeatRate .. " Heat, " .. CoolRate .. " Cool"
