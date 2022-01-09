@@ -801,7 +801,7 @@ return
 end
 
 --------
-
+--[[
 function This:GetWeaponTargeting(Item)
 -- get turret targeting.
 
@@ -825,7 +825,7 @@ function This:ToggleWeaponTargeting(Item)
 	Item.automatic = not Item.automatic
 	return
 end
-
+]]--
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
