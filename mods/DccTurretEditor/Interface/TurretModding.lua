@@ -412,11 +412,11 @@ function Win:BuildUI()
 		"TurretModdingUI_OnClickedBtnCloneTurret"
 		)
 		self.BtnCloneTurret.textSize = FontSize3
-		self.BtnCloneTurret.rect = FrameRect(self.UpgradeFrame,5,3,Cols,Rows)
-		self.BtnCloneTurret.tooltip - "Clone current turret.\n(Does not consume turrets)"
+		self.BtnCloneTurret.rect = FramedRect(self.UpgradeFrame,5,3,Cols,Rows)
+		self.BtnCloneTurret.tooltip = "Clone current turret.\n(Does not consume turrets)"
 		
-	--------End Clone-------
-	
+	-------End Clone-------
+	--[[
 	self.BtnTargeting = self.Window:createButton(
 		Rect(),
 		"Targeting",
@@ -433,7 +433,7 @@ function Win:BuildUI()
 	)
 	self.LblTargeting.rect = FramedRect(self.UpgradeFrame,1,7,Cols,Rows)
 	self.LblTargeting.centered = true
-
+]]--
 	--------
 
 	self.BtnCoaxial = self.Window:createButton(
@@ -711,7 +711,7 @@ function Win:UpdateFields()
 	local Range = 0
 	local Accuracy = 0
 	local Efficiency = 0
-	local Targeting = 0
+	--local Targeting = 0
 	local GunCount = 0
 	local Colour = Color()
 	local Coaxial = false
@@ -730,7 +730,7 @@ function Win:UpdateFields()
 		Range = TurretLib:GetWeaponRange(Item.item)
 		Accuracy = TurretLib:GetWeaponAccuracy(Item.item)
 		Efficiency = TurretLib:GetWeaponEfficiency(Item.item)
-		Targeting = TurretLib:GetWeaponTargeting(Item.item)
+		--Targeting = TurretLib:GetWeaponTargeting(Item.item)
 		GunCount = TurretLib:GetWeaponCount(Item.item)
 		Colour = TurretLib:GetWeaponColour(Item.item)
 		Coaxial = TurretLib:GetWeaponCoaxial(Item.item)
@@ -742,7 +742,7 @@ function Win:UpdateFields()
 
 	-- fill in all the values.
 
-	self.BtnTargeting.caption = "Targeting (Cr. " .. toReadableValue(Config.CostTargeting) .. ")"
+	--self.BtnTargeting.caption = "Targeting (Cr. " .. toReadableValue(Config.CostTargeting) .. ")"
 	self.BtnCoaxial.caption = "Coaxial (Cr. " .. toReadableValue(Config.CostCoaxial) .. ")"
 	self.BtnColour.caption = "Colour HSV (Cr. " .. toReadableValue(Config.CostColour) .. ")"
 	self.BtnSize.caption = "Scale (Cr. " .. toReadableValue(Config.CostSize) .. ")"
@@ -783,9 +783,9 @@ function Win:UpdateFields()
 	self.LblEfficiency.caption = (Efficiency * 100) .. "%"
 	self.LblEfficiency.color = ColourLight
 
-	if(Targeting) then self.LblTargeting.caption = "YES"
-	else self.LblTargeting.caption = "NO"
-	end
+	--if(Targeting) then self.LblTargeting.caption = "YES"
+	--else self.LblTargeting.caption = "NO"
+	--end
 
 	self.LblCoaxial.color = ColourLight
 	if(Coaxial) then self.LblCoaxial.caption = "YES"
@@ -1303,6 +1303,7 @@ function Win:OnClickedBtnCloneTurret()
 	self:UpdateItems(Mock,Real)
 end
 
+--[[
 function Win:OnClickedBtnTargeting()
 -- toggle targeting
 
@@ -1325,7 +1326,7 @@ function Win:OnClickedBtnTargeting()
 	self:UpdateItems(Mock,Real)
 	return
 end
-
+]]--
 function Win:OnClickedBtnColour()
 -- set colour
 
@@ -1435,7 +1436,7 @@ function TurretModdingUI_OnClickedBtnRange(...) Win:OnClickedBtnRange(...) end
 function TurretModdingUI_OnClickedBtnDamage(...) Win:OnClickedBtnDamage(...) end
 function TurretModdingUI_OnClickedBtnAccuracy(...) Win:OnClickedBtnAccuracy(...) end
 function TurretModdingUI_OnClickedBtnEfficiency(...) Win:OnClickedBtnEfficiency(...) end
-function TurretModdingUI_OnClickedBtnTargeting(...) Win:OnClickedBtnTargeting(...) end
+--function TurretModdingUI_OnClickedBtnTargeting(...) Win:OnClickedBtnTargeting(...) end
 function TurretModdingUI_OnClickedBtnColour(...) Win:OnClickedBtnColour(...) end
 function TurretModdingUI_OnClickedBtnCoaxial(...) Win:OnClickedBtnCoaxial(...) end
 function TurretModdingUI_OnClickedBtnSize(...) Win:OnClickedBtnSize(...) end
